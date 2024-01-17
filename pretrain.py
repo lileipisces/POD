@@ -4,7 +4,7 @@ import argparse
 import torch.nn as nn
 from transformers import T5Tokenizer
 from module import Solomon
-from utils import ExpDataLoader, SeqDataLoader, AllBatchify, ExpBatchify, SeqBatchify, TopNBatchify, now_time
+from utils import ExpDataLoader, SeqDataLoader, TrainBatchify, ExpBatchify, SeqBatchify, TopNBatchify, now_time
 
 
 parser = argparse.ArgumentParser(description='POD (PrOmpt Distillation)')
@@ -70,7 +70,7 @@ tokenizer = T5Tokenizer.from_pretrained(model_version)
 exp_corpus = ExpDataLoader(args.data_dir)
 seq_corpus = SeqDataLoader(args.data_dir)
 nitem = len(seq_corpus.id2item)
-all_iterator = AllBatchify(exp_corpus.train, seq_corpus.user2items_positive, args.negative_num, nitem, tokenizer, args.exp_len, args.batch_size)
+all_iterator = TrainBatchify(exp_corpus.train, seq_corpus.user2items_positive, args.negative_num, nitem, tokenizer, args.exp_len, args.batch_size)
 exp_iterator = ExpBatchify(exp_corpus.valid, tokenizer, args.exp_len, args.batch_size)
 seq_iterator = SeqBatchify(seq_corpus.user2items_positive, tokenizer, args.batch_size)
 topn_iterator = TopNBatchify(seq_corpus.user2items_positive, seq_corpus.user2items_negative, args.negative_num, nitem, tokenizer, args.batch_size)

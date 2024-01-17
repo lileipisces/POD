@@ -212,23 +212,18 @@ class TopNSampler:
         return task, inputs, outputs
 
 
-class AllBatchify:
-    def __init__(self, exp_data, user2items_pos, negative_num, item_num, tokenizer, exp_len, batch_size, ratio='1:1:1'):
+class TrainBatchify:
+    def __init__(self, exp_data, user2items_pos, negative_num, item_num, tokenizer, exp_len, batch_size):
         self.exp_sampler = ExpSampler(exp_data)
         self.seq_sampler = SeqSampler(user2items_pos)
         self.topn_sampler = TopNSampler(user2items_pos, negative_num, item_num)
         self.tokenizer = tokenizer
         self.exp_len = exp_len
-        ratio = [float(r) for r in ratio.split(':')]
-        self.exp_num = int(ratio[0] / sum(ratio) * batch_size)
-        self.seq_num = int(ratio[1] / sum(ratio) * batch_size)
-        self.topn_num = batch_size - self.exp_num - self.seq_num
-        if self.exp_num > 0:
-            self.batch_num = int(self.exp_sampler.sample_num / self.exp_num)
-        elif self.seq_num > 0:
-            self.batch_num = int(self.seq_sampler.sample_num / self.seq_num)
-        else:
-            self.batch_num = int(self.topn_sampler.sample_num / self.topn_num)
+        self.batch_size = batch_size
+        self.exp_num = int(self.exp_sampler.sample_num / batch_size)
+        self.seq_num = int(self.seq_sampler.sample_num / batch_size)
+        self.topn_num = int(self.topn_sampler.sample_num / batch_size)
+        self.batch_num = self.exp_num + self.seq_num + self.topn_num
         self.batch_index = 0
 
     def encode(self, task, input_list, output_list):
@@ -245,18 +240,12 @@ class AllBatchify:
 
     def next_batch(self):
         self.batch_index += 1
-        task_list, input_list, output_list = self.exp_sampler.sample(self.exp_num)
-        tasks, inputs, outputs = self.seq_sampler.sample(self.seq_num)
-        task_list.extend(tasks)
-        input_list.extend(inputs)
-        output_list.extend(outputs)
-        tasks, inputs, outputs = self.topn_sampler.sample(self.topn_num)
-        task_list.extend(tasks)
-        input_list.extend(inputs)
-        output_list.extend(outputs)
-        zipped = list(zip(task_list, input_list, output_list))
-        random.shuffle(zipped)
-        task_list, input_list, output_list = zip(*zipped)
+        if self.batch_index % 3 == 1:
+            task_list, input_list, output_list = self.exp_sampler.sample(self.batch_size)
+        elif self.batch_index % 3 == 2:
+            task_list, input_list, output_list = self.seq_sampler.sample(self.batch_size)
+        else:
+            task_list, input_list, output_list = self.topn_sampler.sample(self.batch_size)
         return self.encode(task_list, input_list, output_list)
 
 
