@@ -113,7 +113,7 @@ class Solomon(T5ForConditionalGeneration):
             return_dict=return_dict,
         )
 
-    def beam_search(
+    def my_beam_search(
         self,
         task_id=None,
         input_ids=None,
