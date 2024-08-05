@@ -77,7 +77,7 @@ def generate():
             source_mask = source_mask.to(device)
             whole_word = whole_word.to(device)
 
-            beam_outputs = model.beam_search(task, source, whole_word, source_mask,
+            beam_outputs = model.my_beam_search(task, source, whole_word, source_mask,
                                              num_beams=args.num_beams,
                                              num_return_sequences=args.top_n,
                                              )
