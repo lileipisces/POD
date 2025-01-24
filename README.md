@@ -3,7 +3,7 @@
 ## Paper
 - Lei Li, Yongfeng Zhang, Li Chen. [Prompt Distillation for Efficient LLM-based Recommendation](https://lileipisces.github.io/files/CIKM23-POD-paper.pdf). CIKM'23.
 
-## Amazon Data & Model Checkpoint to [Download](https://lifehkbueduhk-my.sharepoint.com/:f:/g/personal/16484134_life_hkbu_edu_hk/Eq-8HUTFas1Fm0xw2-4S-9IBGmRzW2GGA-ZJi2d3Q2HxTQ?e=vp7Iiy)
+## Amazon Data & Model Checkpoint to [Download](https://drive.google.com/drive/folders/1lm2zIoZ-oXEdSt7vl4qmCbDcw-fgdpiT?usp=sharing)
 - Sports & Outdoors
 - Beauty
 - Toys & Games
